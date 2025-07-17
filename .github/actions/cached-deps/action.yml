@@ -5,6 +5,10 @@ inputs:
     description: 'Whether to cache dependencies or not.'
     required: false
     default: 'true'
+outputs:
+  used-cache:
+    description: 'Use the cache data'
+    value: ${{steps.out-cache.outputCache}}
 runs:
   using: 'composite'
   steps:
@@ -18,4 +22,8 @@ runs:
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
       run: npm ci
+      shell: bash
+    - name: Output Cache data
+      id: out-cache
+      run: echo "outputCache=${{inputs.caching}}" >> $GITHUB_OUTPUT
       shell: bash
